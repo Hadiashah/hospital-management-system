@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — MediCore HMS</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            background: #0d1b2a;
+        }
+
+        .login-left {
+            flex: 1;
+            background: linear-gradient(135deg, #0d1b2a 0%, #1a3a5c 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-left::before {
+            content: '';
+            position: absolute;
+            width: 500px; height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(10,106,245,0.15) 0%, transparent 70%);
+            top: -100px; left: -100px;
+        }
+
+        .login-left::after {
+            content: '';
+            position: absolute;
+            width: 400px; height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,201,167,0.1) 0%, transparent 70%);
+            bottom: -100px; right: -100px;
+        }
+
+        .brand {
+            text-align: center;
+            z-index: 1;
+            margin-bottom: 60px;
+        }
+
+        .brand-icon {
+            width: 72px; height: 72px;
+            background: linear-gradient(135deg, #0a6af5, #00c9a7);
+            border-radius: 20px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 30px;
+            color: #fff;
+            margin: 0 auto 20px;
+            box-shadow: 0 20px 40px rgba(10,106,245,0.3);
+        }
+
+        .brand-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 38px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .brand-tagline {
+            font-size: 13px;
+            color: rgba(255,255,255,0.4);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 8px;
+        }
+
+        .features {
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .feature-icon {
+            width: 42px; height: 42px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.07);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px;
+            color: #0a6af5;
+            flex-shrink: 0;
+        }
+
+        .feature-text {
+            font-size: 14px;
+            color: rgba(255,255,255,0.7);
+            font-weight: 500;
+        }
+
+        /* Right Panel */
+        .login-right {
+            width: 480px;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 50px;
+        }
+
+        .login-form-container {
+            width: 100%;
+            max-width: 360px;
+        }
+
+        .form-heading {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 4px;
+        }
+
+        .form-subheading {
+            font-size: 14px;
+            color: #718096;
+            margin-bottom: 36px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 6px;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0aec0;
+            font-size: 15px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 14px 12px 42px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: 'DM Sans', sans-serif;
+            color: #1a202c;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: #f8fafc;
+        }
+
+        .form-input:focus {
+            border-color: #0a6af5;
+            box-shadow: 0 0 0 3px rgba(10,106,245,0.1);
+            background: #fff;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(135deg, #0a6af5, #0855cc);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s;
+            margin-top: 8px;
+            letter-spacing: 0.3px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(10,106,245,0.35);
+        }
+
+        .login-btn:active { transform: translateY(0); }
+
+        .alert {
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #fff5f5;
+            color: #822727;
+            border: 1px solid #fed7d7;
+        }
+
+        .demo-hint {
+            margin-top: 28px;
+            padding: 14px;
+            background: #f0f4f9;
+            border-radius: 10px;
+            font-size: 12px;
+            color: #718096;
+            text-align: center;
+        }
+
+        .demo-hint strong { color: #4a5568; }
+
+        @media (max-width: 800px) {
+            .login-left { display: none; }
+            .login-right { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-left">
+    <div class="brand">
+        <div class="brand-icon"><i class="fas fa-heartbeat"></i></div>
+        <div class="brand-name">MediCore</div>
+        <div class="brand-tagline">Hospital Management System</div>
+    </div>
+
+    <div class="features">
+        <div class="feature-item">
+            <div class="feature-icon"><i class="fas fa-procedures"></i></div>
+            <div class="feature-text">Complete Patient Management</div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon"><i class="fas fa-user-md"></i></div>
+            <div class="feature-text">Doctor Roster & Scheduling</div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon"><i class="fas fa-calendar-check"></i></div>
+            <div class="feature-text">Appointment Tracking</div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+            <div class="feature-text">Real-Time Dashboard Analytics</div>
+        </div>
+    </div>
+</div>
+
+<div class="login-right">
+    <div class="login-form-container">
+        <div class="form-heading">Welcome back</div>
+        <div class="form-subheading">Sign in to access the hospital dashboard</div>
+
+        {% for message in messages %}
+        <div class="alert">
+            <i class="fas fa-exclamation-circle"></i>
+            {{ message }}
+        </div>
+        {% endfor %}
+
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label">Username</label>
+                <div class="input-wrap">
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" name="username" class="form-input" placeholder="Enter your username" required autofocus>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <div class="input-wrap">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" name="password" class="form-input" placeholder="Enter your password" required>
+                </div>
+            </div>
+            <button type="submit" class="login-btn">
+                <i class="fas fa-arrow-right"></i> Sign In
+            </button>
+        </form>
+
+        <div class="demo-hint">
+            <strong>Default credentials:</strong><br>
+            Username: <strong>admin</strong> &nbsp;|&nbsp; Password: <strong>admin123</strong><br>
+            <small style="margin-top:4px;display:block;">(Run the setup script to create these)</small>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

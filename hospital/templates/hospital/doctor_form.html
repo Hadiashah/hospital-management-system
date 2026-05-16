@@ -1,0 +1,78 @@
+{% extends 'hospital/base.html' %}
+
+{% block title %}{{ action }} — MediCore HMS{% endblock %}
+{% block page_title %}{{ action }}{% endblock %}
+{% block page_subtitle %}{% if doctor %}Editing profile for Dr. {{ doctor.name }}{% else %}Add a new doctor to the system{% endif %}{% endblock %}
+
+{% block topbar_actions %}
+<a href="{% url 'doctor_list' %}" class="btn btn-secondary">
+    <i class="fas fa-arrow-left"></i> Back to Doctors
+</a>
+{% endblock %}
+
+{% block content %}
+<div style="max-width: 700px;">
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">
+                <i class="fas fa-user-md" style="color:#38a169;margin-right:8px;"></i>
+                {{ action }}
+            </div>
+        </div>
+        <div class="card-body">
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Full Name *</label>
+                        {{ form.name }}
+                        {% if form.name.errors %}<div style="color:#e53e3e;font-size:12px;margin-top:4px;">{{ form.name.errors.0 }}</div>{% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Specialization *</label>
+                        {{ form.specialization }}
+                        {% if form.specialization.errors %}<div style="color:#e53e3e;font-size:12px;margin-top:4px;">{{ form.specialization.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Phone Number *</label>
+                        {{ form.phone }}
+                        {% if form.phone.errors %}<div style="color:#e53e3e;font-size:12px;margin-top:4px;">{{ form.phone.errors.0 }}</div>{% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        {{ form.email }}
+                        {% if form.email.errors %}<div style="color:#e53e3e;font-size:12px;margin-top:4px;">{{ form.email.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Years of Experience</label>
+                        {{ form.experience_years }}
+                        {% if form.experience_years.errors %}<div style="color:#e53e3e;font-size:12px;margin-top:4px;">{{ form.experience_years.errors.0 }}</div>{% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Availability</label>
+                        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;">
+                            {{ form.available }}
+                            <label style="font-size:14px;cursor:pointer;">Currently available for appointments</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display:flex;gap:12px;margin-top:8px;">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i>
+                        {% if doctor %}Update Doctor{% else %}Add Doctor{% endif %}
+                    </button>
+                    <a href="{% url 'doctor_list' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

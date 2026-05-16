@@ -1,0 +1,39 @@
+{% extends 'hospital/base.html' %}
+
+{% block title %}Confirm Delete — MediCore HMS{% endblock %}
+{% block page_title %}Confirm Delete{% endblock %}
+{% block page_subtitle %}This action cannot be undone{% endblock %}
+
+{% block content %}
+<div style="max-width: 500px; margin: 40px auto;">
+    <div class="card">
+        <div class="card-body" style="text-align:center; padding: 48px 32px;">
+            <div style="width:72px;height:72px;background:#fff5f5;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px;color:#e53e3e;">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+
+            <h2 style="font-size:22px;font-weight:700;margin-bottom:10px;">Delete {{ type }}?</h2>
+            <p style="color:#718096;font-size:14px;margin-bottom:8px;">You are about to permanently delete:</p>
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 20px;margin-bottom:24px;">
+                <strong style="font-size:16px;">{{ object }}</strong>
+            </div>
+
+            <p style="color:#e53e3e;font-size:13px;margin-bottom:28px;font-weight:500;">
+                <i class="fas fa-warning"></i> This action is permanent and cannot be undone.
+            </p>
+
+            <div style="display:flex;gap:12px;justify-content:center;">
+                <form method="post" style="margin:0;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Yes, Delete Permanently
+                    </button>
+                </form>
+                <a href="javascript:history.back()" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

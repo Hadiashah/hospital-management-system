@@ -1,0 +1,119 @@
+{% extends 'hospital/base.html' %}
+
+{% block title %}Appointments — MediCore HMS{% endblock %}
+{% block page_title %}Appointments{% endblock %}
+{% block page_subtitle %}{{ total }} appointment{{ total|pluralize }} in the system{% endblock %}
+
+{% block topbar_actions %}
+<a href="{% url 'appointment_add' %}" class="btn btn-primary">
+    <i class="fas fa-plus"></i> Schedule Appointment
+</a>
+{% endblock %}
+
+{% block content %}
+
+<!-- Search & Filter -->
+<div class="card" style="margin-bottom: 24px;">
+    <div class="card-body" style="padding: 16px 24px;">
+        <form method="get" style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+            <div class="search-input-wrap">
+                <i class="fas fa-search"></i>
+                <input type="text" name="q" class="search-input" placeholder="Search patient or doctor..." value="{{ query }}">
+            </div>
+            <select name="status" class="form-control" style="width:180px;">
+                <option value="">All Statuses</option>
+                <option value="Scheduled" {% if status_filter == 'Scheduled' %}selected{% endif %}>Scheduled</option>
+                <option value="Completed" {% if status_filter == 'Completed' %}selected{% endif %}>Completed</option>
+                <option value="Cancelled" {% if status_filter == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+            </select>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-filter"></i> Filter
+            </button>
+            {% if query or status_filter %}
+            <a href="{% url 'appointment_list' %}" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Clear
+            </a>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+<!-- Table -->
+<div class="card">
+    <div class="card-header">
+        <div class="card-title">Appointment Records</div>
+        <span class="badge badge-info">{{ total }} Total</span>
+    </div>
+    <div class="table-wrapper">
+        {% if appointments %}
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    <th style="text-align:center;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for appt in appointments %}
+                <tr>
+                    <td class="text-muted">{{ forloop.counter }}</td>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <div style="width:32px;height:32px;border-radius:50%;background:#fffbeb;color:#d97706;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0;">
+                                {{ appt.patient_name|first|upper }}
+                            </div>
+                            <strong>{{ appt.patient_name }}</strong>
+                        </div>
+                    </td>
+                    <td>
+                        <i class="fas fa-user-md" style="color:#718096;margin-right:5px;font-size:12px;"></i>
+                        Dr. {{ appt.doctor_name }}
+                    </td>
+                    <td>
+                        <strong>{{ appt.date|date:"M j, Y" }}</strong>
+                    </td>
+                    <td class="text-muted">
+                        {% if appt.time %}{{ appt.time|time:"g:i A" }}{% else %}—{% endif %}
+                    </td>
+                    <td class="text-muted" style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                        {{ appt.reason|default:"—" }}
+                    </td>
+                    <td>
+                        <span class="badge {% if appt.status == 'Scheduled' %}badge-info{% elif appt.status == 'Completed' %}badge-success{% else %}badge-danger{% endif %}">
+                            {{ appt.status }}
+                        </span>
+                    </td>
+                    <td>
+                        <div style="display:flex;gap:6px;justify-content:center;">
+                            <a href="{% url 'appointment_edit' appt.pk %}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <a href="{% url 'appointment_delete' appt.pk %}" class="btn btn-danger btn-sm">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon"><i class="fas fa-calendar"></i></div>
+            <div class="empty-title">No appointments found</div>
+            <p class="text-muted">Schedule your first appointment to get started.</p>
+            <a href="{% url 'appointment_add' %}" class="btn btn-primary" style="margin-top:16px;">
+                <i class="fas fa-plus"></i> Schedule Appointment
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

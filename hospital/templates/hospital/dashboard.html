@@ -1,0 +1,237 @@
+{% extends 'hospital/base.html' %}
+
+{% block title %}Dashboard — MediCore HMS{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block page_subtitle %}Welcome back, {{ user.get_full_name|default:user.username }} — {{ today|date:"l, F j, Y" }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+    }
+
+    .critical-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: #fff5f5;
+        color: #e53e3e;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .appt-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .appt-row:last-child { border-bottom: none; }
+
+    .appt-info { flex: 1; }
+    .appt-patient { font-size: 14px; font-weight: 600; }
+    .appt-doctor { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+    .appt-date {
+        text-align: right;
+        font-size: 12px;
+        color: var(--text-muted);
+    }
+
+    .patient-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .patient-row:last-child { border-bottom: none; }
+
+    .patient-avatar {
+        width: 36px; height: 36px;
+        border-radius: 50%;
+        background: var(--primary-light);
+        color: var(--primary);
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 700;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+    .patient-info { flex: 1; }
+    .patient-name { font-size: 14px; font-weight: 600; }
+    .patient-disease { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        margin-bottom: 28px;
+    }
+
+    .quick-action {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 18px;
+        text-align: center;
+        text-decoration: none;
+        color: var(--text);
+        transition: all 0.2s;
+    }
+
+    .quick-action:hover {
+        border-color: var(--primary);
+        box-shadow: 0 4px 16px rgba(10,106,245,0.1);
+        transform: translateY(-2px);
+    }
+
+    .quick-action-icon {
+        font-size: 24px;
+        margin-bottom: 8px;
+    }
+
+    .quick-action-label {
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    @media (max-width: 900px) {
+        .grid-2 { grid-template-columns: 1fr; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Stats Grid -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon" style="background:#e8f0fe;color:#0a6af5;">
+            <i class="fas fa-procedures"></i>
+        </div>
+        <div>
+            <div class="stat-value" style="color:#0a6af5;">{{ total_patients }}</div>
+            <div class="stat-label">Total Patients</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon" style="background:#e6f9f2;color:#38a169;">
+            <i class="fas fa-user-md"></i>
+        </div>
+        <div>
+            <div class="stat-value" style="color:#38a169;">{{ total_doctors }}</div>
+            <div class="stat-label">Total Doctors</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon" style="background:#fffbeb;color:#d97706;">
+            <i class="fas fa-calendar-check"></i>
+        </div>
+        <div>
+            <div class="stat-value" style="color:#d97706;">{{ todays_appointments }}</div>
+            <div class="stat-label">Today's Appointments</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon" style="background:#fff5f5;color:#e53e3e;">
+            <i class="fas fa-exclamation-circle"></i>
+        </div>
+        <div>
+            <div class="stat-value" style="color:#e53e3e;">{{ critical_patients }}</div>
+            <div class="stat-label">Critical Patients</div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="quick-actions">
+    <a href="{% url 'patient_add' %}" class="quick-action">
+        <div class="quick-action-icon" style="color:#0a6af5;"><i class="fas fa-user-plus"></i></div>
+        <div class="quick-action-label">Add Patient</div>
+    </a>
+    <a href="{% url 'doctor_add' %}" class="quick-action">
+        <div class="quick-action-icon" style="color:#38a169;"><i class="fas fa-user-md"></i></div>
+        <div class="quick-action-label">Add Doctor</div>
+    </a>
+    <a href="{% url 'appointment_add' %}" class="quick-action">
+        <div class="quick-action-icon" style="color:#d97706;"><i class="fas fa-calendar-plus"></i></div>
+        <div class="quick-action-label">New Appointment</div>
+    </a>
+</div>
+
+<!-- Lower Grid -->
+<div class="grid-2">
+
+    <!-- Upcoming Appointments -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title"><i class="fas fa-calendar-alt" style="color:#0a6af5;margin-right:8px;"></i>Upcoming Appointments</div>
+            <a href="{% url 'appointment_list' %}" class="btn btn-outline btn-sm">View All</a>
+        </div>
+        <div class="card-body" style="padding: 0 24px;">
+            {% if upcoming_appointments %}
+                {% for appt in upcoming_appointments %}
+                <div class="appt-row">
+                    <div class="appt-info">
+                        <div class="appt-patient">{{ appt.patient_name }}</div>
+                        <div class="appt-doctor"><i class="fas fa-user-md" style="font-size:11px;"></i> {{ appt.doctor_name }}</div>
+                    </div>
+                    <div class="appt-date">
+                        <div>{{ appt.date|date:"M j" }}</div>
+                        {% if appt.time %}<div>{{ appt.time|time:"g:i A" }}</div>{% endif %}
+                        <span class="badge badge-info" style="margin-top:4px;">{{ appt.status }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon"><i class="fas fa-calendar"></i></div>
+                    <div class="empty-title">No upcoming appointments</div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Recent Patients -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title"><i class="fas fa-procedures" style="color:#38a169;margin-right:8px;"></i>Recent Patients</div>
+            <a href="{% url 'patient_list' %}" class="btn btn-outline btn-sm">View All</a>
+        </div>
+        <div class="card-body" style="padding: 0 24px;">
+            {% if recent_patients %}
+                {% for patient in recent_patients %}
+                <div class="patient-row">
+                    <div class="patient-avatar">{{ patient.name|first|upper }}</div>
+                    <div class="patient-info">
+                        <div class="patient-name">{{ patient.name }}</div>
+                        <div class="patient-disease">{{ patient.disease }}</div>
+                    </div>
+                    <span class="badge {% if patient.status == 'Active' %}badge-success{% elif patient.status == 'Critical' %}badge-danger{% else %}badge-gray{% endif %}">
+                        {{ patient.status }}
+                    </span>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon"><i class="fas fa-procedures"></i></div>
+                    <div class="empty-title">No patients yet</div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

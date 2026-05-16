@@ -1,0 +1,76 @@
+{% extends 'hospital/base.html' %}
+
+{% block title %}{{ action }} — MediCore HMS{% endblock %}
+{% block page_title %}{{ action }}{% endblock %}
+{% block page_subtitle %}{% if patient %}Editing record for {{ patient.name }}{% else %}Create a new patient record{% endif %}{% endblock %}
+
+{% block topbar_actions %}
+<a href="{% url 'patient_list' %}" class="btn btn-secondary">
+    <i class="fas fa-arrow-left"></i> Back to Patients
+</a>
+{% endblock %}
+
+{% block content %}
+<div style="max-width: 700px;">
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">
+                <i class="fas fa-{% if patient %}edit{% else %}user-plus{% endif %}" style="color:#0a6af5;margin-right:8px;"></i>
+                {{ action }}
+            </div>
+        </div>
+        <div class="card-body">
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Full Name *</label>
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                        <div style="color:#e53e3e;font-size:12px;margin-top:4px;">{{ form.name.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Age *</label>
+                        {{ form.age }}
+                        {% if form.age.errors %}
+                        <div style="color:#e53e3e;font-size:12px;margin-top:4px;">{{ form.age.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Disease / Diagnosis *</label>
+                        {{ form.disease }}
+                        {% if form.disease.errors %}
+                        <div style="color:#e53e3e;font-size:12px;margin-top:4px;">{{ form.disease.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Assigned Doctor *</label>
+                        {{ form.doctor }}
+                        {% if form.doctor.errors %}
+                        <div style="color:#e53e3e;font-size:12px;margin-top:4px;">{{ form.doctor.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group" style="max-width:200px;">
+                    <label class="form-label">Status</label>
+                    {{ form.status }}
+                </div>
+
+                <div style="display:flex;gap:12px;margin-top:8px;">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        {% if patient %}Update Patient{% else %}Add Patient{% endif %}
+                    </button>
+                    <a href="{% url 'patient_list' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
