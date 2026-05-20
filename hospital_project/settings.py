@@ -8,6 +8,8 @@ SECRET_KEY = 'django-insecure-hospital-mgmt-secret-key-change-in-production-2024
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+CSRF_TRUSTED_ORIGINS = ['https://*.railway.app']
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
